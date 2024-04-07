@@ -1,42 +1,31 @@
-"use client";
-
-import { createClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/server";
+import React from "react";
+import Logout from "./Logout";
+import Image from "next/image";
 
 type Props = {};
 
-const Nav = (props: Props) => {
-  const [userData, setUserData] = useState<User | null>(null);
+const Nav = async (props: Props) => {
   const supabase = createClient();
-  const router = useRouter();
-
-  useEffect(() => {
-    const getUserData = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUserData(data?.user);
-      }
-    };
-    getUserData();
-  }, []);
+  const { data } = await supabase.auth.getUser();
 
   return (
     <>
-      {userData && (
+      {data?.user && (
         <div className="w-full  bg-slate-800 p-4">
           <div className="w-full flex justify-between text-center">
-            <p>{userData?.email}</p>
-            <button
-              className="border bg-white text-black rounded-sm p-1"
-              onClick={async () => {
-                await supabase.auth.signOut();
-                router.refresh();
-              }}
-            >
-              Sign out
-            </button>
+            <div className="flex items-center gap-2">
+              <Image
+                src={data?.user?.user_metadata?.avatar_url}
+                width={40}
+                height={40}
+                alt="profile-pic"
+                className="rounded-full"
+              />
+              <p>{data?.user?.email}</p>
+            </div>
+
+            <Logout />
           </div>
         </div>
       )}
