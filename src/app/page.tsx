@@ -1,16 +1,20 @@
-import { supabase } from "@/lib/supabase";
+import Nav from "@/components/Nav";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
-  const { data, error } = await supabase
-    .from("notes")
-    .insert({ title: "test" });
+  const supabase = createClient();
+
+  const { data, error } = await createClient().from("notes").select();
 
   console.log("data", data);
   console.log("eror", error);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Hi</h1>
-    </main>
+    <>
+      <Nav />
+      <main className="flex">
+        <h1 className="text-2xl">Home Page</h1>
+      </main>
+    </>
   );
 }
