@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteTodo } from "@/lib/actions";
+import { deleteTodo, editTodo } from "@/lib/actions";
 import { Tables } from "@/types/supabase";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -12,22 +12,44 @@ type Props = {
 const Todo = ({ todo }: Props) => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(todo.isCompleted);
 
   const handleDeleteTodo = async () => {
     setLoading(true);
 
     const { error } = await deleteTodo({ id: todo.id });
     if (error) {
-      alert("Something went wrong while deleting todo. " + error);
+      alert("Something went wrong while deleting todo. " + error.message);
+      return;
     }
     router.refresh();
     setLoading(false);
   };
 
+  const hanldeTodoCompleted = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setChecked((prev) => !prev);
+    const { error } = await editTodo({
+      isCompleted: e.target.checked,
+      todo_id: todo.id,
+    });
+    if (error) {
+      setChecked((prev) => !prev);
+      alert("Something went wrong while editing todo. " + error.message);
+      return;
+    }
+    router.refresh();
+  };
+
   return (
     <div className="px-2 py-3 border border-slate-400 rounded-lg flex justify-between">
       <div className="flex space-x-2">
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={hanldeTodoCompleted}
+        />
         <p className=" truncate">{todo.title}</p>
       </div>
 

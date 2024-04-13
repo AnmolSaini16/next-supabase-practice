@@ -21,7 +21,8 @@ const AddTodo = (props: Props) => {
     setLoading(true);
     const { error } = await addTodo({ title });
     if (error) {
-      alert("Something went wrong while adding todo. " + error);
+      alert("Something went wrong while adding todo. " + error.message);
+      return;
     }
     router.refresh();
     setLoading(false);
@@ -43,7 +44,7 @@ const AddTodo = (props: Props) => {
         type="submit"
         disabled={loading}
       >
-        {loading ? "Adding..." : "Add"}
+        {loading ? "Adding" : "Add"}
       </button>
     </form>
   );

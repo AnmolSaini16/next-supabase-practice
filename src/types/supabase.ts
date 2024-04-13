@@ -75,7 +75,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      edit_todo: {
+        Args: {
+          checked: boolean
+          todo_id: number
+        }
+        Returns: {
+          created_at: string
+          id: number
+          isCompleted: boolean
+          title: string | null
+          userId: string | null
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
